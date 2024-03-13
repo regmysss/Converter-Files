@@ -1,0 +1,98 @@
+.Conteiner-drag-file{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 50px 0;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0px 5px 10px rgba(180, 200, 225, 0.8);
+    gap: 10px;
+}
+.Conteiner-format-file{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+}
+
+.Conteiner-format-file span{
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: ease-in 0.1s;
+}
+
+.passive{
+    color: white;
+    background-color: rgb(56, 64, 75);
+}
+
+.passive:hover{
+    border: 3px solid rgb(56, 64, 75);
+    background-color: white;
+    color: rgb(56, 64, 75);
+}
+
+.active{
+    border: 3px solid rgb(212, 77, 58);
+    color: rgb(212, 77, 58);
+}
+
+.Drag-file{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    min-height: 225px;
+    border-radius: 10px;
+    border: 2px dashed rgba(180, 200, 225, 0.8);
+    cursor: pointer;
+}
+
+.Drag-file span{
+    font-size: 22px;
+    font-weight: bold;
+    color: #b5cef2;
+}
+
+.Container-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Download-btn, .Clear-btn{
+    cursor: pointer;
+    width: 160px;
+    height: 40px;
+    margin: 10px;
+    outline: none;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    transition: ease-in 0.1s;
+}
+
+.Download-btn{
+    background-color: rgb(56, 64, 75);
+}
+
+.Clear-btn{
+    background-color: rgb(212, 77, 58);
+}
+
+.Download-btn:hover{
+    border: 3px solid rgb(56, 64, 75);
+    background-color: white;
+    color: rgb(56, 64, 75);
+}
+
+.Clear-btn:hover{
+    border: 3px solid rgb(212, 77, 58);
+    background-color: white;
+    color: rgb(212, 77, 58);
+}
