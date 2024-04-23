@@ -1,0 +1,133 @@
+.Conteiner-drag-file {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 50px 0;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0px 5px 10px rgba(180, 200, 225, 0.8);
+    gap: 10px;
+}
+
+.Conteiner-format-file {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 50px;
+}
+
+.Conteiner-format-file span {
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: ease-in 0.1s;
+}
+
+.passive {
+    color: white;
+    background-color: rgb(56, 64, 75);
+}
+
+.passive:hover {
+    border: 3px solid rgb(56, 64, 75);
+    background-color: white;
+    color: rgb(56, 64, 75);
+}
+
+.active {
+    border: 3px solid rgb(212, 77, 58);
+    color: rgb(212, 77, 58);
+}
+
+.Drag-file {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 800px;
+    min-height: 225px;
+    border-radius: 10px;
+    border: 2px dashed rgba(180, 200, 225, 0.8);
+}
+
+.Drag-file span {
+    margin: auto;
+    font-weight: bold;
+}
+
+.Container-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Download-all-btn,
+.Clear-btn,
+.Submit-btn,
+.UploadFile-btn {
+    cursor: pointer;
+    width: 160px;
+    height: 40px;
+    margin: 10px;
+    outline: none;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    transition: ease-in 0.1s;
+}
+
+.Download-all-btn {
+    background-color: rgb(56, 64, 75);
+}
+
+.Clear-btn {
+    background-color: rgb(212, 77, 58);
+}
+
+.Submit-btn {
+    background-color: rgb(4, 169, 109);
+}
+
+.UploadFile-btn {
+    background-color: rgb(42, 115, 217);
+}
+
+.Download-all-btn:hover {
+    border: 3px solid rgb(56, 64, 75);
+    background-color: white;
+    color: rgb(56, 64, 75);
+}
+
+.Clear-btn:hover {
+    border: 3px solid rgb(212, 77, 58);
+    background-color: white;
+    color: rgb(212, 77, 58);
+}
+
+.Submit-btn:hover {
+    border: 3px solid rgb(4, 169, 109);
+    background-color: white;
+    color: rgb(4, 169, 109);
+}
+
+.UploadFile-btn:hover {
+    border: 3px solid rgb(42, 115, 217);
+    background-color: white;
+    color: rgb(42, 115, 217);
+}
+
+.Input-files {
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.Error {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+}
