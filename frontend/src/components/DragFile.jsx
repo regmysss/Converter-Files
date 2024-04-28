@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/DragFile.css';
 import supportImageFormats from '../utils/supportFormats';
 import Loading from './UI/Loading/Loading';
@@ -7,10 +7,10 @@ import ShowFiles from './ShowFiles';
 const DragFiles = () => {
     const [format, setFormat] = useState(['JPEG', 'image']);
     const [files, setFiles] = useState([]);
-    const [isLoading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
     const [filesRef, setFilesRef] = useState([]);
+    const [error, setError] = useState(false);
     const inputFilesRef = useRef(null);
+    const [isProcessing, setProcessing] = useState(false);
 
     function createFiles(json, format, callback) {
         const keysJson = Object.keys(json)
@@ -18,7 +18,7 @@ const DragFiles = () => {
         let list = [];
 
         for (let index = 0; index < keysJson.length; index++) {
-            receivedBase64Data = json[keysJson[index]];
+            receivedBase64Data = json[keysJson[index]]['base64data'];
             decodedBinaryData = atob(receivedBase64Data);
             decodedUint8Array = new Uint8Array(decodedBinaryData.length);
 
@@ -31,7 +31,8 @@ const DragFiles = () => {
             blob.name = `${keysJson[index]}.${format.toLowerCase()}`;
             blob.lastModified = new Date();
 
-            myFile = new File([blob], `${keysJson[index]}.${format.toLowerCase()}`)
+
+            myFile = new File([blob], `${keysJson[index]}.${format.toLowerCase()}`, { type: json[keysJson[index]]['mimetype'] })
 
             list.push(myFile);
         }
@@ -45,7 +46,7 @@ const DragFiles = () => {
         }
 
         if (files.length !== 0) {
-            setLoading(true);
+            setProcessing(true)
 
             const formData = new FormData();
 
@@ -66,7 +67,8 @@ const DragFiles = () => {
                     createFiles(json, format[0], (list) => {
                         setFiles(list);
                     });
-                    setLoading(false);
+
+                    setProcessing(false)
                 })
         }
     }
@@ -101,7 +103,7 @@ const DragFiles = () => {
         let fileItems = e.target.files
         let filteredFiles = []
 
-        for (var file of fileItems) {
+        for (let file of fileItems) {
             if (files.length != 0) {
                 files[0].type.split('/')[0] === file.type.split('/')[0] ? filteredFiles.push(file) : setError(true)
             }
@@ -134,24 +136,27 @@ const DragFiles = () => {
                     <span className={frmt[0] !== format[0] ? 'passive' : 'active'} onClick={() => setFormat(frmt)} key={index}>{frmt[0]}</span>
                 ))}
             </div>
+
             <div className='Drag-file' onDragStart={dragStart} onDragOver={dragStart} onDragLeave={dragStart} onDrop={onDrop}>
                 {
-                    isLoading ? <Loading /> : <ShowFiles files={files} deleteItem={deleteItem} getFileItemsRef={getFileItemsRef} />
+                    isProcessing ? <Loading /> : <ShowFiles files={files} deleteItem={deleteItem} getFileItemsRef={getFileItemsRef} />
                 }
                 <input className='Input-files' type="file" ref={inputFilesRef} onChange={(e) =>
                     filesHandler(e)
                 } multiple accept='image/*, video/*' />
             </div>
-            {error === true &&
+
+            {error &&
                 <div className='Error'>
                     <span>Type of files can be only the same</span>
                 </div>
             }
+
             <div className='Container-buttons'>
-                <button onClick={selectFiles} className='UploadFile-btn'>Upload Files</button>
-                <button onClick={submitFiles} className='Submit-btn'>Submit</button>
-                <button onClick={downloadAll} className='Download-all-btn'>Download all</button>
-                <button onClick={clearAll} className='Clear-btn'>Clear all</button>
+                <button disabled={isProcessing} onClick={selectFiles} className='UploadFile-btn'>Upload Files</button>
+                <button disabled={files.length == 0 || isProcessing} onClick={submitFiles} className='Submit-btn'>Submit</button>
+                <button disabled={files.length == 0 || isProcessing} onClick={downloadAll} className='Download-all-btn'>Download all</button>
+                <button disabled={files.length == 0 || isProcessing} onClick={clearAll} className='Clear-btn'>Clear all</button>
             </div>
         </div>
     );

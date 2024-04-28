@@ -96,28 +96,44 @@
     background-color: rgb(42, 115, 217);
 }
 
-.Download-all-btn:hover {
+.Download-all-btn:hover:enabled {
     border: 3px solid rgb(56, 64, 75);
     background-color: white;
     color: rgb(56, 64, 75);
 }
 
-.Clear-btn:hover {
+.Download-all-btn:disabled {
+    background-color: rgb(56, 64, 75, 0.5);
+}
+
+.Clear-btn:hover:enabled {
     border: 3px solid rgb(212, 77, 58);
     background-color: white;
     color: rgb(212, 77, 58);
 }
 
-.Submit-btn:hover {
+.Clear-btn:disabled {
+    background-color: rgb(212, 77, 58, 0.5);
+}
+
+.Submit-btn:hover:enabled {
     border: 3px solid rgb(4, 169, 109);
     background-color: white;
     color: rgb(4, 169, 109);
 }
 
-.UploadFile-btn:hover {
+.Submit-btn:disabled {
+    background-color: rgb(4, 169, 109, 0.5);
+}
+
+.UploadFile-btn:hover:enabled {
     border: 3px solid rgb(42, 115, 217);
     background-color: white;
     color: rgb(42, 115, 217);
+}
+
+.UploadFile-btn:disabled {
+    background-color: rgb(42, 115, 217, 0.5);
 }
 
 .Input-files {

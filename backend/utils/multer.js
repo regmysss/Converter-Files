@@ -1,21 +1,12 @@
 const multer = require('multer')
 const uuid = require('uuid')
-const fs = require('fs');
-
-let dirName;
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        if (!dirName || !fs.existsSync('./uploads/' + dirName)) {
-            dirName = uuid.v4();
-            fs.mkdirSync('./uploads/' + dirName);
-            fs.mkdirSync('./outputs/' + dirName);
-        }
-        req.uploadDirectory = dirName;
-        callback(null, './uploads/' + dirName)
+        callback(null, './uploads/')
     },
     filename: (req, file, callback) => {
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
+        file.originalname = uuid.v4() + '.' + file.originalname.split('.').pop()
         callback(null, file.originalname)
     }
 })
