@@ -5,8 +5,6 @@ let uploads = require('./utils/multer.js');
 const fs = require('fs');
 const app = express();
 const mime = require('mime-types');
-const e = require('express');
-
 
 app.use(cors())
 
