@@ -5,6 +5,7 @@ let uploads = require('./utils/multer.js');
 const fs = require('fs');
 const app = express();
 const mime = require('mime-types');
+const e = require('express');
 
 
 app.use(cors())
@@ -29,6 +30,7 @@ function reformatFile(file, toFormat, fromFormat) {
         fs.readFile(`./outputs/${file.originalname.split('.')[0]}.${toFormat[0]}`, (err, data) => {
           if (err) {
             console.error(err);
+            rej(err);
             return;
           }
 
@@ -37,28 +39,58 @@ function reformatFile(file, toFormat, fromFormat) {
       })
       .on("error", (err) => {
         console.error("Error:", err);
-        rej()
+        rej(err);
       })
       .run();
   })
 }
 
+async function waitForFileExists(filePath, currentTime = 0, timeout = 3000) {
+  if (fs.existsSync(filePath)) {
+    return true;
+  }
+
+  if (currentTime === timeout)
+    return false;
+
+  await new Promise((res) => setTimeout(() => res(), 1000))
+
+  return waitForFileExists(filePath, currentTime + 1000, timeout);
+}
+
+function deleteFile(filePath, currentTime = 0, timeout = 5000) {
+  fs.unlink(filePath, async (err) => {
+    if (err) {
+      if (currentTime == timeout)
+        return console.error('Error deleting file:', err)
+
+      if (err.code == 'EBUSY' || err.code == 'ENOENT') {
+        await new Promise((res) => setTimeout(() => res(), 1000));
+
+        console.log(currentTime)
+
+        return deleteFile(filePath, currentTime + 1000, timeout);
+      }
+    }
+  })
+}
+
 async function clearFiles(files, toFormat) {
-  try {
-    await Promise.all(files.map(async (file) => {
-      let uplFile = file.originalname;
-      let outFile = file.originalname.split('.')[0] + '.' + toFormat;
-      await fs.promises.unlink('./uploads/' + uplFile);
-      await fs.promises.unlink('./outputs/' + outFile);
-    }));
-    console.log("All files deleted successfully.");
-  } catch (error) {
-    console.error("Error deleting files:", error);
+  for (let i = 0; i < files.length; i++) {
+    let uplfile = `./uploads/${files[i].originalname}`
+    let outfile = `./outputs/${files[i].originalname.split('.')[0]}.${toFormat}`
+
+    if (await waitForFileExists(uplfile)) {
+      deleteFile(uplfile);
+    }
+
+    if (await waitForFileExists(outfile)) {
+      deleteFile(outfile);
+    }
   }
 }
 
-
-app.post('/', uploads, function (req, res) {
+app.post('/', uploads, async function (req, res) {
   const toFormat = req.body.toFormat.toLowerCase().split(',');
   const fromFormat = req.body.fromFormat;
   const files = req.files;
@@ -67,24 +99,29 @@ app.post('/', uploads, function (req, res) {
   let promises = [];
 
   files.forEach((file) => {
-    promises.push(new Promise((res) => {
+    promises.push(new Promise((res, rej) => {
       reformatFile(file, toFormat, fromFormat).then((base64) => {
         let fileName = file.originalname.split('.')[0];
         json[fileName] = { base64data: base64, mimetype: mime.lookup(`./outputs/${fileName}.${toFormat[0]}`) };
         res();
-      })
+      }).catch((err) => rej(err));
     }))
-  })
+  });
+
 
   Promise.all(promises)
     .then(() => {
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify(json));
     })
-    .then(() => {
+    .catch(() => {
+      res.status(500).send("Internal Server Error");
+    })
+    .finally(() => {
       clearFiles(files, toFormat[0]);
     })
-})
+});
+
 
 app.listen(3000, () => {
   console.log('Server start');

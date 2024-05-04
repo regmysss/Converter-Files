@@ -13,7 +13,7 @@ const ShowFiles = ({ files, deleteItem, getFileItemsRef }) => {
     function downloadFile(index) {
         aFileDownloadRef.current[index].click();
     }
-
+    
     return (
         <>
             {

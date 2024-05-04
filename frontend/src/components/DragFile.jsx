@@ -6,78 +6,82 @@ import ShowFiles from './ShowFiles';
 
 const DragFiles = () => {
     const [format, setFormat] = useState(['JPEG', 'image']);
-    const [files, setFiles] = useState([]);
-    const [filesRef, setFilesRef] = useState([]);
-    const [error, setError] = useState(false);
-    const inputFilesRef = useRef(null);
+    const [files, setFiles] = useState({ NotConverted: [], Converted: [] });
     const [isProcessing, setProcessing] = useState(false);
+    const [error, setError] = useState("");
+    const [filesRef, setFilesRef] = useState([]);
+    const inputFilesRef = useRef(null);
+
+    useEffect(() => {
+        if (isProcessing) {
+            submitFiles()
+        }
+    }, [isProcessing])
 
     function createFiles(json, format, callback) {
-        const keysJson = Object.keys(json)
-        let receivedBase64Data, decodedBinaryData, decodedUint8Array, blob, myFile;
-        let list = [];
-
-        for (let index = 0; index < keysJson.length; index++) {
-            receivedBase64Data = json[keysJson[index]]['base64data'];
-            decodedBinaryData = atob(receivedBase64Data);
-            decodedUint8Array = new Uint8Array(decodedBinaryData.length);
+        const list = Object.keys(json).map((key, index) => {
+            const receivedBase64Data = json[key]['base64data'];
+            const decodedBinaryData = atob(receivedBase64Data);
+            const decodedUint8Array = new Uint8Array(decodedBinaryData.length);
 
             for (let i = 0; i < decodedBinaryData.length; i++) {
                 decodedUint8Array[i] = decodedBinaryData.charCodeAt(i);
             }
 
-            blob = new Blob([decodedUint8Array]);
-
-            blob.name = `${keysJson[index]}.${format.toLowerCase()}`;
+            const blob = new Blob([decodedUint8Array]);
+            blob.name = `${files.NotConverted[index].name.split('.')[0]}.${format.toLowerCase()}`;
             blob.lastModified = new Date();
 
-
-            myFile = new File([blob], `${keysJson[index]}.${format.toLowerCase()}`, { type: json[keysJson[index]]['mimetype'] })
-
-            list.push(myFile);
-        }
+            return new File([blob], `${files.NotConverted[index].name.split('.')[0]}.${format.toLowerCase()}`, { type: json[key]['mimetype'] });
+        });
 
         callback(list);
     }
 
-    function submitFiles() {
-        if (error == true) {
-            setError(false)
-        }
-
-        if (files.length !== 0) {
-            setProcessing(true)
-
+    async function submitFiles() {
+        if (files.NotConverted.length !== 0) {
             const formData = new FormData();
 
             formData.append('toFormat', format);
-            formData.append('fromFormat', files[0].type.split('/')[0]);
+            formData.append('fromFormat', files.NotConverted[0].type.split('/')[0]);
 
-            for (var i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
+            for (var i = 0; i < files.NotConverted.length; i++) {
+                formData.append('files', files.NotConverted[i]);
             }
 
-            fetch('http://localhost:3000/',
-                {
+            try {
+                const response = await fetch('http://localhost:3000/', {
                     method: "POST",
                     body: formData
                 })
-                .then(res => res.json())
-                .then(json => {
-                    createFiles(json, format[0], (list) => {
-                        setFiles(list);
-                    });
 
-                    setProcessing(false)
-                })
+                if (response.status == 200) {
+                    response.json().then(json => {
+                        createFiles(json, format[0], (list) => {
+                            setFiles(prev => ({
+                                NotConverted: [],
+                                Converted: [...prev.Converted, ...list]
+                            }));
+
+                        });
+
+                        setProcessing(false);
+                    })
+                }
+                else if (response.status == 500) {
+                    handleError("Problems on the server side, please try again later.");
+                    clearAll();
+                    setProcessing(false);
+                }
+            } catch {
+                handleError("Server is offline, please try again later.");
+                clearAll();
+                setProcessing(false);
+            }
         }
     }
 
     function selectFiles() {
-        if (error == true) {
-            setError(false)
-        }
-
         inputFilesRef.current.click();
     }
 
@@ -87,36 +91,47 @@ const DragFiles = () => {
 
     function onDrop(e) {
         e.preventDefault();
-        setFiles([...files, ...e.dataTransfer.files])
+
+        let fileItems = Array.from(e.dataTransfer.files);
+
+        if (fileItems.length != 0) {
+            let filesType = fileItems[0].type.split('/')[0]
+            let filteredFiles = fileItems.filter((file) => file.type.split('/')[0] === filesType);
+
+            if (filteredFiles.length !== fileItems.length) {
+                handleError("The type of files must be the same.");
+            }
+
+            setFiles(prev => ({ ...prev, NotConverted: [...filteredFiles] }));
+            setProcessing(true);
+        }
     }
 
     function clearAll() {
-        if (error == true) {
-            setError(false)
-        }
-
         inputFilesRef.current.value = null;
-        setFiles([]);
+        setFiles({ NotConverted: [], Converted: [] });
     }
 
     function filesHandler(e) {
-        let fileItems = e.target.files
-        let filteredFiles = []
+        let fileItems = Array.from(e.target.files);
 
-        for (let file of fileItems) {
-            if (files.length != 0) {
-                files[0].type.split('/')[0] === file.type.split('/')[0] ? filteredFiles.push(file) : setError(true)
+        if (fileItems.length != 0) {
+            let filesType = fileItems[0].type.split('/')[0]
+
+            let filteredFiles = fileItems.filter((file) => file.type.split('/')[0] === filesType);
+
+            if (filteredFiles.length !== fileItems.length) {
+                handleError("The type of files must be the same.");
             }
-            else {
-                fileItems.item(0).type.split('/')[0] === file.type.split('/')[0] ? filteredFiles.push(file) : setError(true)
-            }
+
+            setFiles(prev => ({ ...prev, NotConverted: [...filteredFiles] }));
+            setProcessing(true);
         }
-
-        setFiles([...files, ...filteredFiles])
     }
 
+
     function deleteItem(index) {
-        setFiles(files.filter(item => item !== files[index]))
+        setFiles(prev => ({ ...prev, Converted: prev.Converted.filter(item => item !== prev.Converted[index]) }))
     }
 
     function getFileItemsRef(filesRef) {
@@ -129,6 +144,12 @@ const DragFiles = () => {
         })
     }
 
+    async function handleError(err) {
+        setError(err)
+        await new Promise((res) => setTimeout(() => res(), 10000));
+        setError("");
+    }
+
     return (
         <div className='Conteiner-drag-file'>
             <div className='Conteiner-format-file'>
@@ -139,22 +160,22 @@ const DragFiles = () => {
 
             <div className='Drag-file' onDragStart={dragStart} onDragOver={dragStart} onDragLeave={dragStart} onDrop={onDrop}>
                 {
-                    isProcessing ? <Loading /> : <ShowFiles files={files} deleteItem={deleteItem} getFileItemsRef={getFileItemsRef} />
+                    isProcessing ? <Loading /> :
+                        <ShowFiles files={files.Converted} deleteItem={deleteItem} getFileItemsRef={getFileItemsRef} />
                 }
                 <input className='Input-files' type="file" ref={inputFilesRef} onChange={(e) =>
                     filesHandler(e)
                 } multiple accept='image/*, video/*' />
             </div>
 
-            {error &&
+            {error != "" &&
                 <div className='Error'>
-                    <span>Type of files can be only the same</span>
+                    <div>{error}</div>
                 </div>
             }
 
             <div className='Container-buttons'>
                 <button disabled={isProcessing} onClick={selectFiles} className='UploadFile-btn'>Upload Files</button>
-                <button disabled={files.length == 0 || isProcessing} onClick={submitFiles} className='Submit-btn'>Submit</button>
                 <button disabled={files.length == 0 || isProcessing} onClick={downloadAll} className='Download-all-btn'>Download all</button>
                 <button disabled={files.length == 0 || isProcessing} onClick={clearAll} className='Clear-btn'>Clear all</button>
             </div>

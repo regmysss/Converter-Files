@@ -42,6 +42,8 @@
 }
 
 .Drag-file {
+    background-color: white;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -143,7 +145,32 @@
 }
 
 .Error {
+    z-index: 0;
     text-align: center;
     color: red;
     font-weight: bold;
+    animation-name: showError;
+    animation-duration: 10s;
+}
+
+@keyframes showError {
+    0% {
+        transform: translateY(-40px);
+        opacity: 0;
+    }
+
+    10% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    90% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-40px);
+        opacity: 0;
+    }
 }

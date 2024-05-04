@@ -55,7 +55,7 @@ function App() {
         stays safe. You never need to worry about your files staying on our server for more than one hour!
       </p>
       <footer>
-        <p>All uploaded data is deleted after 1 hour.</p>
+        <p>All uploaded data is not saved</p>
         <p>© Anonymous {dateTime.getFullYear()}</p>
       </footer>
     </div>
