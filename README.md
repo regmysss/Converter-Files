@@ -13,7 +13,7 @@ This project uses the following libraries:
 - [FFmpeg](https://ffmpeg.org/)
 
 Website view:
-![Website view](https://imgur.com/Jqs86ZO)
+![Website view](https://i.imgur.com/Jqs86ZO.png)
 
 ## Setup
 ### 1. Clone this repo:
