@@ -10,9 +10,8 @@ const upload = multer({ dest: "uploads/" });
 
 app.use(cors());
 
-function reformatFile(file, toFormat) {
+function reformatFile(file, to) {
 	return new Promise((resolve, reject) => {
-		const to = toFormat.split(',');
 		const from = file.mimetype.split("/")[0];
 		let command = ffmpeg(file.path);
 
@@ -44,7 +43,7 @@ function reformatFile(file, toFormat) {
 }
 
 app.post("/", upload.array("files"), (req, res) => {
-	const toFormat = req.body.toFormat.toLowerCase();
+	const toFormat = req.body.toFormat.toLowerCase().split(',');
 	const files = req.files;
 
 	const response = {};
@@ -52,7 +51,11 @@ app.post("/", upload.array("files"), (req, res) => {
 		return new Promise((resolve, reject) => {
 			return reformatFile(file, toFormat)
 				.then(({ base64, destination }) => {
-					response[file.originalname] = {
+					let fileName = file.originalname.split('.')
+					fileName.pop()
+					fileName = fileName.join('') + '.' + toFormat[0]
+
+					response[fileName] = {
 						base64,
 						mimetype: mime.getType(destination),
 					};
