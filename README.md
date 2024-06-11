@@ -1,3 +1,4 @@
+# Converter files
 ## Introduction
 This website is made for reformatting files to other formats. You can change the file formats to those supported by FFmpeg.
 
@@ -11,7 +12,7 @@ This project uses the following libraries:
 - [Node.js](https://nodejs.org/en)
 - [FFmpeg](https://ffmpeg.org/)
 
-##Setup
+## Setup
 ### 1. Clone this repo:
 Navigate into your workspace directory.
 Run:
@@ -25,15 +26,21 @@ Install FFmpreg globally. How does the FFmpeg install globally? You can watch th
 [Guide](https://www.youtube.com/watch?v=IECI72XEox0&t=356s)
 [Download FFmpeg](https://ffmpeg.org/download.html)
 
-### 3. Install dependencies:
+### 4. Install dependencies:
 You should go to the server and frontend folder and run the following command:
-`npm i`
+\```
+npm i
+\```
 
-##Development
-###Frontend:
+## Development
+### Frontend:
 Run the local website on [http://localhost:5173](http://localhost:5173)
-`npm run dev`
+\```
+npm run dev
+\```
 
-###Server:
+### Server:
 Run the local server on [http://localhost:3000](http://localhost:3000)
-`npm run start`
+\```
+npm run start
+\```
