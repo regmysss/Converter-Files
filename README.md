@@ -29,7 +29,7 @@ Install FFmpreg globally. How does the FFmpeg install globally? You can watch th
 [Download FFmpeg](https://ffmpeg.org/download.html)
 
 ### 4. Install dependencies:
-You should go to the server and frontend folder and run the following command:
+You should go to the backend and frontend folder and run the following command:
 ```
 npm i
 ```
