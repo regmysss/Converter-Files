@@ -1,4 +1,3 @@
-#Converter files
 ## Introduction
 This website is made for reformatting files to other formats. You can change the file formats to those supported by FFmpeg.
 
