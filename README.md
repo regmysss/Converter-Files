@@ -26,7 +26,7 @@ git clone https://github.com/regmysss/ConvertFiles.git
 ### 3. Install FFmpeg:
 Install FFmpreg globally. How does the FFmpeg install globally? You can watch this guide:
 
-[Guide](https://www.youtube.com/watch?v=IECI72XEox0&t=356s)
+[Guide](https://www.youtube.com/watch?v=IECI72XEox0&t)
 
 [Download FFmpeg](https://ffmpeg.org/download.html)
 
