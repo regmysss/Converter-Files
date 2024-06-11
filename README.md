@@ -12,6 +12,9 @@ This project uses the following libraries:
 - [Node.js](https://nodejs.org/en)
 - [FFmpeg](https://ffmpeg.org/)
 
+Site view:
+![](https://imgur.com/Jqs86ZO)
+
 ## Setup
 ### 1. Clone this repo:
 Navigate into your workspace directory.
