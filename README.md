@@ -16,7 +16,9 @@ This project uses the following libraries:
 ### 1. Clone this repo:
 Navigate into your workspace directory.
 Run:
-`git clone https://github.com/regmysss/ConvertFiles.git`
+```
+git clone https://github.com/regmysss/ConvertFiles.git
+```
 
 ### 2. Install node.js:
 [https://nodejs.org/en](https://nodejs.org/en)
