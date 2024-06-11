@@ -12,13 +12,13 @@ app.use(cors());
 
 function reformatFile(file, toFormat) {
 	return new Promise((resolve, reject) => {
-		const mimetype = mime.getType(toFormat);
+		const to = toFormat.split(',');
 		const from = file.mimetype.split("/")[0];
 		let command = ffmpeg(file.path);
 
 		if (
 			from === "image" ||
-			(from === "video" && mimetype.split("/")[0] === "image")
+			(from === "video" && to[1] === "image")
 		) {
 			command.frames(1);
 		}
@@ -27,7 +27,7 @@ function reformatFile(file, toFormat) {
 			fs.mkdirSync("./outputs");
 		}
 
-		const destination = `./outputs/${file.filename}.${toFormat}`;
+		const destination = `./outputs/${file.filename}.${to[0]}`;
 		command
 			.on("end", () => {
 				fs.readFile(destination, (err, data) => {
@@ -44,7 +44,7 @@ function reformatFile(file, toFormat) {
 }
 
 app.post("/", upload.array("files"), (req, res) => {
-	const toFormat = req.body.toFormat;
+	const toFormat = req.body.toFormat.toLowerCase();
 	const files = req.files;
 
 	const response = {};

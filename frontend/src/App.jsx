@@ -1,4 +1,3 @@
-import React from "react"
 import './styles/App.css'
 import DragFiles from "./components/DragFile";
 
@@ -51,8 +50,8 @@ function App() {
         It is totally safe to use our tool to convert your files. Your original file remains untouched on your phone,
         tablet, or computer, so you can always go back to the original if the converted file doesn’t work for you.
         <br /><br />
-        Also, our server deletes all uploads and conversions after one hour. This ensures your sensitive information
-        stays safe. You never need to worry about your files staying on our server for more than one hour!
+        Also, our server deletes all downloads and conversions at once.
+        This ensures the safety of your confidential information. You never have to worry about your files staying on our server!
       </p>
       <footer>
         <p>All uploaded data is not saved</p>

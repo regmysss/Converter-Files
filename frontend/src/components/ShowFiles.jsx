@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import '../styles/ShowFile.css'
 
+/* eslint-disable react/prop-types */
 const ShowFiles = ({ files, deleteItem, getFileItemsRef }) => {
     const aFileDownloadRef = useRef([]);
 
@@ -8,12 +9,12 @@ const ShowFiles = ({ files, deleteItem, getFileItemsRef }) => {
         if (files.length != 0) {
             getFileItemsRef(aFileDownloadRef.current)
         }
-    }, [files])
+    }, [files, getFileItemsRef])
 
     function downloadFile(index) {
         aFileDownloadRef.current[index].click();
     }
-    
+
     return (
         <>
             {
