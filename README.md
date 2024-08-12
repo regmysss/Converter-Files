@@ -20,7 +20,7 @@ Website view:
 Navigate into your workspace directory.
 Run:
 ```
-git clone https://github.com/regmysss/ConvertFiles.git
+git clone https://github.com/regmysss/Converter-Files.git
 ```
 
 ### 2. Install node.js:
